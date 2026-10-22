@@ -1,0 +1,176 @@
+/* YDC KUST — redesign layer.
+   Modern compact navbar + full-width image hero.
+   Loaded after style.css and pro.css so it wins without touching them. */
+
+/* ============================================================
+   1. NAVBAR — slimmer, cleaner, calmer
+   ============================================================ */
+header.site{
+  background:var(--head-bg);
+  border-bottom:1px solid transparent;
+  transition:background .3s,box-shadow .3s,border-color .3s;
+}
+header.site.scrolled,header.site.stuck{
+  background:rgba(255,255,255,.9);
+  border-bottom-color:var(--head-line);
+  box-shadow:0 1px 0 rgba(6,77,50,.04),0 12px 32px -24px rgba(6,77,50,.45);
+}
+header.site .wrap{min-height:64px;gap:1.5rem}
+
+/* brand: tighter, subtitle hidden until there is room */
+.brand{gap:.65rem}
+.brand img{width:40px;height:40px}
+.brand b{font:800 1.08rem/1.15 var(--font-d);letter-spacing:-.02em}
+.brand small{font-size:.7rem;letter-spacing:.01em;max-width:170px}
+
+/* links: roomier hit areas, quieter default colour */
+nav.main ul{gap:.05rem}
+nav.main a.top,nav.main button.top{
+  padding:.55rem .7rem;
+  font:600 .92rem var(--font-b);
+  color:var(--text);
+  border-radius:99px;
+  transition:color .2s,background .2s;
+}
+nav.main a.top:hover,nav.main button.top:hover,nav.main li.open>button{
+  color:var(--g-dd);background:var(--mist);
+}
+/* active link: soft pill instead of an underline stub */
+nav.main .on{color:var(--g-dd);font-weight:700}
+nav.main .on::after{display:none}
+nav.main a.top.on{background:var(--g-soft)}
+
+/* CTA sits a little apart from the links */
+.nav-cta{margin-left:.5rem;padding-left:.9rem;border-left:1px solid var(--line)}
+.nav-cta .btn{border-radius:99px;padding:.6rem 1.15rem;font-size:.9rem}
+
+/* dropdown: bigger radius, softer shadow, slide-in */
+.drop{
+  min-width:290px;
+  border-radius:18px;
+  padding:.55rem;
+  border-color:rgba(217,234,223,.9);
+  box-shadow:0 24px 60px -28px rgba(6,77,50,.42),0 2px 6px -4px rgba(6,77,50,.18);
+  animation:dropIn .18s ease both;
+}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.drop a{border-radius:11px;padding:.6rem .8rem}
+.drop a small{font-size:.8rem;margin-top:3px}
+
+/* burger: match the slimmer bar */
+.burger{border-radius:99px;padding:.5rem .6rem}
+
+/* ============================================================
+   2. HERO — full-bleed image with a green scrim
+   ============================================================ */
+.hero-banner{
+  position:relative;
+  isolation:isolate;
+  display:grid;
+  align-items:center;
+  min-height:clamp(460px,72vh,760px);
+  padding:clamp(3.5rem,8vw,6rem) 0 clamp(4rem,9vw,7rem);
+  overflow:hidden;
+  background:var(--g-dd);
+  color:#fff;
+}
+.hero-banner .hb-media{position:absolute;inset:0;z-index:-2}
+.hero-banner .hb-media img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+/* two scrims: a left-to-right wash for text contrast, plus a soft vertical settle */
+.hero-banner::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    linear-gradient(100deg,rgba(3,45,29,.94) 0%,rgba(4,56,36,.86) 38%,rgba(5,64,42,.5) 68%,rgba(6,77,50,.28) 100%),
+    linear-gradient(180deg,rgba(3,45,29,.35),transparent 45%);
+}
+.hero-banner .wrap{position:relative;max-width:var(--wrap)}
+
+.hero-banner .eyebrow{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.26);
+  color:#dff7eb;
+  backdrop-filter:blur(6px);
+  margin-bottom:1.4rem;
+}
+.hero-banner .eyebrow::before{background:var(--eng)}
+
+.hero-banner h1{
+  color:#fff;
+  font-size:clamp(2.3rem,5.2vw,4.3rem);
+  line-height:1.05;
+  letter-spacing:-.025em;
+  max-width:22ch;
+  margin:0 0 .5em;
+  text-wrap:balance;
+}
+.hero-banner h1 em{font-style:normal;color:var(--eng)}
+.hero-banner p.lead{
+  color:rgba(233,248,241,.88);
+  font-size:clamp(1.05rem,1.6vw,1.22rem);
+  max-width:52ch;
+  margin:0;
+}
+.hero-banner .acts{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:2rem}
+/* buttons on the scrim need their own contrast */
+.hero-banner .btn-p{background:#fff;color:var(--g-dd)}
+.hero-banner .btn-p:hover{background:var(--g-soft);color:var(--g-dd)}
+.hero-banner .btn-o{border-color:rgba(255,255,255,.55);color:#fff}
+.hero-banner .btn-o:hover{background:rgba(255,255,255,.14);border-color:#fff;color:#fff}
+
+/* date badge, moved into the text column so it never overlaps the photo */
+.hero-banner .hb-card{
+  display:inline-flex;align-items:center;gap:.85rem;
+  margin-top:2.2rem;
+  padding:.6rem 1.15rem .6rem .6rem;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:99px;
+  backdrop-filter:blur(10px);
+  text-decoration:none;color:#fff;
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.hero-banner .hb-card:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4);color:#fff;transform:translateY(-2px)}
+.hero-banner .hb-card .d{
+  flex:none;display:grid;place-items:center;
+  background:var(--eng);color:var(--ink);
+  border-radius:99px;padding:.4rem .8rem;
+  font:800 .78rem/1.05 var(--font-b);text-transform:uppercase;letter-spacing:.04em;
+}
+.hero-banner .hb-card .d b{display:block;font:800 1.15rem/1 var(--font-d);letter-spacing:-.02em}
+.hero-banner .hb-card small{display:block;font-size:.76rem;color:rgba(233,248,241,.7);line-height:1.2}
+.hero-banner .hb-card span:last-child b{font:700 .96rem/1.3 var(--font-d)}
+
+/* the old split-layout column is unused now */
+.hero-banner .hcol{display:none}
+
+/* entrances */
+.hero-banner .rise{opacity:0;animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-banner .rise:nth-child(2){animation-delay:.07s}
+.hero-banner .rise:nth-child(3){animation-delay:.14s}
+.hero-banner .rise:nth-child(4){animation-delay:.21s}
+.hero-banner .rise:nth-child(5){animation-delay:.28s}
+
+@media(max-width:1060px){
+  .hero-banner{min-height:0;padding:clamp(3rem,9vw,4.5rem) 0}
+  .hero-banner h1{max-width:26ch}
+  .hero-banner p.lead{max-width:none}
+}
+@media(max-width:900px){
+  header.site .wrap{gap:1rem}
+  .hero-banner .acts .btn{flex:1 1 auto;justify-content:center}
+}
+@media(max-width:640px){
+  .hero-banner{min-height:0;padding:2.6rem 0 3.2rem}
+  .hero-banner h1{font-size:2.05rem;max-width:none}
+  .hero-banner p.lead{font-size:1rem}
+  .hero-banner::before{
+    background:
+      linear-gradient(180deg,rgba(3,45,29,.95) 0%,rgba(4,56,36,.88) 55%,rgba(5,64,42,.82) 100%);
+  }
+  .hero-banner .hb-card{width:100%;border-radius:16px}
+  .nav-cta{padding-left:0;border-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-banner .rise{opacity:1;animation:none}
+  .drop{animation:none}
+}
