@@ -1,3 +1,5 @@
-# Form submissions are private. Never commit them.
+# Form submissions and CVs are private. Never commit them.
 *.jsonl
+cvs/*
+!cvs/.htaccess
 !/.gitkeep

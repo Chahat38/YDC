@@ -15,7 +15,7 @@ php/
 ├── opportunities.php, register.php, contact.php, 404.php
 ├── includes/                  header, footer, helpers, config
 ├── assets/                    css, js, images (same files as the HTML site)
-├── data/                      saved form submissions (protected)
+├── data/                      saved submissions + CV uploads (protected)
 ├── .htaccess                  Apache/LiteSpeed settings
 └── README-FTP.md              this file
 ```
@@ -63,11 +63,18 @@ Open `includes/config.php` and change only what you need:
 | `site.phone` / `phone_href` | Phone number and `tel:` link |
 | `site.year` | Copyright year |
 | `forms.store` | `true` = save each submission to `data/*.jsonl` |
-| `forms.mail` | `true` = also email a copy with PHP `mail()` |
-| `forms.to` | Where those emails go |
+| `forms.mail` | `array('contact')` = email contact messages only. `true` = every form, `false` = none |
+| `forms.to` | Where those emails go (default `ydc@kust.edu.pk`) |
 
-`forms.mail` is **OFF** by default because many shared hosts block `mail()`
-or mark it as spam. Turn it on, send one test message, then decide.
+The **contact form** is set to email `ydc@kust.edu.pk`. Every submission is
+also saved to `data/` as a backup, so nothing is lost if the host blocks
+PHP `mail()`.
+
+To email registrations as well:
+
+```php
+'mail' => array('contact', 'registration'),
+```
 
 ---
 
@@ -84,6 +91,20 @@ Registration and contact forms are handled by PHP on the server.
   editor, or paste a line into a JSON viewer.
 
 Every submission gets a reference like `YDC-4F9A2C` which is shown to the user.
+
+### CV uploads
+
+The registration form accepts an optional CV:
+
+- PDF, DOC or DOCX
+- maximum 5 MB (change `uploads.cv_max_mb` in `includes/config.php`)
+- stored in `data/cvs/` with a random name such as `YDC-4F9A2C-272d908d.pdf`
+- the submission log keeps both the stored name (`cv_file`) and the original
+  file name (`cv_name`)
+- web access to `data/` and `data/cvs/` is blocked by `.htaccess`
+
+If uploads fail, check `upload_max_filesize` and `post_max_size` in the
+server's `php.ini` (both must be larger than 5 MB).
 
 ---
 

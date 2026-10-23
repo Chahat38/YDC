@@ -38,13 +38,18 @@ save hoti hain (web access blocked). Baad mein database milne par
 
 ```php
 'forms' => [
-    'store' => true,               // data/*.jsonl mein save karein
-    'mail'  => false,              // PHP mail() se email bhejein
+    'store' => true,                 // data/*.jsonl mein save karein
+    'mail'  => array('contact'),     // contact form ydc@kust.edu.pk par email
     'to'    => 'ydc@kust.edu.pk',
 ],
 ```
 
-`mail` default `false` hai kyunki bohat si shared hosting `mail()` block karti hai.
+- **Contact form** ki har submission `ydc@kust.edu.pk` par email hoti hai (PHP `mail()`).
+  Backup ke taur par har submission `data/` mein bhi save hoti hai.
+- **Registration form** mein **CV upload** hai — PDF/DOC/DOCX, max 5 MB.
+  File `data/cvs/` mein random naam se save hoti hai (web access blocked).
+- Agar hosting `mail()` block karti hai to email nahi jayegi, lekin message
+  `data/` mein save rahega — FTP se download kar sakte hain.
 
 ---
 

@@ -70,7 +70,7 @@ require __DIR__ . '/includes/header.php';
 <div class="sec-head row"><div><h2>The people behind YDC</h2></div><a class="btn btn-o btn-s" href="team.php">Meet the full team</a></div>
 <div class="team">
 <div class="person"><div class="ph"><img src="assets/img/team-asif.jpg" alt="Dr. Asif Ali" loading="lazy"></div><div class="t"><h3>Dr. Asif Ali</h3><p>Incharge, YDC / CHRCD</p></div></div>
-<div class="person"><div class="ph"><img src="assets/img/team-aamir.jpg" alt="Aamir" loading="lazy"></div><div class="t"><h3>Aamir</h3><p>Graphic Designer &amp; Office Attendant</p></div></div>
+<div class="person"><div class="ph"><img src="assets/img/team-aamir.jpg" alt="Aamir" loading="lazy"></div><div class="t"><h3>Aamir</h3><p>Office Attendant</p></div></div>
 <div class="person"><div class="ph"><img src="assets/img/team-abeera.jpg" alt="Abeera" loading="lazy"></div><div class="t"><h3>Abeera</h3><p>Graphic Designer, Intern</p></div></div>
 <div class="person"><div class="ph"><img src="assets/img/team-chahat.jpg" alt="Chahat" loading="lazy"></div><div class="t"><h3>Chahat</h3><p>Web Developer Intern</p></div></div>
 <div class="person"><div class="ph"><img src="assets/img/team-remsha.jpg" alt="Remsha" loading="lazy"></div><div class="t"><h3>Remsha</h3><p>Web Developer Intern</p></div></div>

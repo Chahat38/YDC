@@ -159,6 +159,12 @@ function ydc_form_state($type)
         return $state;
     }
 
+    /* --- upload larger than post_max_size: PHP empties $_POST --- */
+    if (empty($_POST) && !empty($_SERVER['CONTENT_LENGTH'])) {
+        $state['errors']['_'] = 'The file you selected is too large for the server. Please use a smaller file.';
+        return $state;
+    }
+
     if ((isset($_POST['form']) ? $_POST['form'] : '') !== $type) {
         return $state;
     }
@@ -254,6 +260,17 @@ function ydc_form_state($type)
         $record[$field] = isset($_POST[$field]) ? trim((string) $_POST[$field]) : '';
     }
 
+    /* --- optional CV upload (registration form) --- */
+    $upload = ydc_handle_cv_upload($ref);
+    if (isset($upload['error'])) {
+        $state['errors']['cv'] = $upload['error'];
+        return $state;
+    }
+    if (!empty($upload['file'])) {
+        $record['cv_file'] = $upload['file'];
+        $record['cv_name'] = $upload['name'];
+    }
+
     $stored = ydc_store($record);
     $mailed = ydc_mail($record, $type);
 
@@ -325,12 +342,118 @@ function ydc_store(array $record)
 }
 
 /* ------------------------------------------------------------
+   CV upload (registration form)
+   Files are stored in /data/cvs with a random name and are
+   blocked from web access by .htaccess.
+   ------------------------------------------------------------ */
+function ydc_cv_max_mb()
+{
+    $c = ydc_config();
+    return isset($c['uploads']['cv_max_mb']) ? (int) $c['uploads']['cv_max_mb'] : 5;
+}
+
+function ydc_cv_types()
+{
+    $c = ydc_config();
+    return isset($c['uploads']['cv_types']) && is_array($c['uploads']['cv_types'])
+        ? $c['uploads']['cv_types']
+        : array('pdf', 'doc', 'docx');
+}
+
+function ydc_handle_cv_upload($ref)
+{
+    if (!isset($_FILES['cv']) || !is_array($_FILES['cv']) || !isset($_FILES['cv']['error'])) {
+        return array();
+    }
+
+    $file = $_FILES['cv'];
+    $code = (int) $file['error'];
+
+    if ($code === UPLOAD_ERR_NO_FILE) {
+        return array();
+    }
+    if ($code === UPLOAD_ERR_INI_SIZE || $code === UPLOAD_ERR_FORM_SIZE) {
+        return array('error' => 'The CV is too large. Maximum size is ' . ydc_cv_max_mb() . ' MB.');
+    }
+    if ($code !== UPLOAD_ERR_OK) {
+        return array('error' => 'The CV could not be uploaded. Please try again.');
+    }
+
+    $original = isset($file['name']) ? (string) $file['name'] : 'cv';
+    $tmp      = isset($file['tmp_name']) ? (string) $file['tmp_name'] : '';
+    $size     = isset($file['size']) ? (int) $file['size'] : 0;
+
+    if ($size <= 0 || $size > ydc_cv_max_mb() * 1024 * 1024) {
+        return array('error' => 'The CV must be ' . ydc_cv_max_mb() . ' MB or smaller.');
+    }
+    if ($tmp === '' || !is_uploaded_file($tmp)) {
+        return array('error' => 'The CV could not be uploaded. Please try again.');
+    }
+
+    $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+    if (!in_array($ext, ydc_cv_types(), true)) {
+        return array('error' => 'Upload the CV as a PDF or Word file (.pdf, .doc, .docx).');
+    }
+
+    /* Basic content check so a renamed .exe cannot sneak through. */
+    if (function_exists('finfo_open')) {
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo) {
+            $mime = (string) @finfo_file($finfo, $tmp);
+            @finfo_close($finfo);
+            $allowed = array(
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/zip',
+                'application/octet-stream',
+            );
+            if ($mime !== '' && !in_array($mime, $allowed, true)) {
+                return array('error' => 'That file does not look like a PDF or Word document.');
+            }
+        }
+    }
+
+    $dir = YDC_ROOT . '/data/cvs';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+    if (!is_dir($dir) || !is_writable($dir)) {
+        return array('error' => 'The upload folder is not writable. Please email your CV to ' . ydc_site()['email'] . '.');
+    }
+
+    $safeRef = preg_replace('/[^A-Z0-9\-]/', '', strtoupper((string) $ref));
+    $stored  = $safeRef . '-' . substr(hash('sha256', $original . '|' . microtime(true)), 0, 8) . '.' . $ext;
+    $target  = $dir . '/' . $stored;
+
+    if (!@move_uploaded_file($tmp, $target)) {
+        return array('error' => 'The CV could not be saved. Please try again.');
+    }
+    @chmod($target, 0640);
+
+    return array('file' => $stored, 'name' => $original);
+}
+
+/* ------------------------------------------------------------
    Email notification (optional)
    ------------------------------------------------------------ */
 function ydc_mail(array $record, $type)
 {
     $config = ydc_forms();
-    if (empty($config['mail']) || empty($config['to'])) {
+    if (empty($config['to'])) {
+        return false;
+    }
+
+    /* 'mail' can be false, true (all forms) or a list of form types. */
+    $switch = isset($config['mail']) ? $config['mail'] : false;
+    if ($switch === true) {
+        $enabled = true;
+    } elseif (is_array($switch)) {
+        $enabled = in_array($type, $switch, true);
+    } else {
+        $enabled = false;
+    }
+    if (!$enabled) {
         return false;
     }
 

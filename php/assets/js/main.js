@@ -33,6 +33,11 @@
     if(f.required&&!v) msg='This field is required.';
     else if(n==='email'&&v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg='Enter a valid email, like name@example.com';
     else if(n==='phone'&&v&&!/^[+0-9\s-]{10,16}$/.test(v)) msg='Enter a valid mobile number, like 0300 1234567';
+    else if(n==='cv'&&f.files&&f.files.length){
+      var file=f.files[0];
+      if(!/\.(pdf|doc|docx)$/i.test(file.name)) msg='Upload a PDF or Word file (.pdf, .doc, .docx).';
+      else if(file.size>5*1024*1024) msg='The CV must be 5 MB or smaller.';
+    }
     var box=f.closest('.fld'); if(box){box.classList.toggle('bad',!!msg);var e=$('.err',box);if(e)e.textContent=msg}
     return !msg;
   }

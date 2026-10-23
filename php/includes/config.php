@@ -33,11 +33,13 @@ return [
         'store' => true,
 
         /* Send an email copy with the built-in PHP mail() function.
-           Many shared hosts block mail() or mark it as spam, so this is
-           OFF by default. Turn it on only after testing. */
-        'mail'  => false,
+           false            = never
+           true             = every form
+           array('contact') = only the forms listed here
+           Contact messages are emailed to the YDC office address below. */
+        'mail'  => array('contact'),
 
-        /* Where notification emails go (only used when 'mail' is true). */
+        /* Where notification emails go. */
         'to'    => 'ydc@kust.edu.pk',
 
         /* From address for notification emails. Leave empty to auto-build
@@ -49,6 +51,10 @@ return [
     'uploads' => [
         /* Max submissions accepted from one session in 10 minutes. */
         'per_session' => 6,
+
+        /* CV upload (registration form). */
+        'cv_max_mb'   => 5,
+        'cv_types'    => array('pdf', 'doc', 'docx'),
     ],
 
     /* ============================================================
