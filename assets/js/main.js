@@ -45,10 +45,11 @@
     if(sel&&q){for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===q||sel.options[i].getAttribute('data-key')===q){sel.selectedIndex=i;break}}}
 
     form.addEventListener('submit',function(e){
-      e.preventDefault();
       if($('.hp-in',form)&&$('.hp-in',form).value) return;           // bot trap
       var okAll=true; fields.forEach(function(f){if(!rule(f))okAll=false});
-      if(!okAll){var b=$('.fld.bad input,.fld.bad select,.fld.bad textarea',form);if(b)b.focus();return}
+      if(!okAll){e.preventDefault();var b=$('.fld.bad input,.fld.bad select,.fld.bad textarea',form);if(b)b.focus();return}
+      if(form.hasAttribute('data-php')) return;                       // PHP build: let the server handle the POST
+      e.preventDefault();
       var data={}; fields.forEach(function(f){data[f.name]=f.value.trim()});
       data.form=form.getAttribute('data-form')||'registration';
       data.submitted_at=new Date().toISOString(); data.page=location.pathname.split('/').pop();

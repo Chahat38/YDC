@@ -1,27 +1,80 @@
-# YDC KUST — naya website
+# YDC KUST — website
 
-Static website (HTML + CSS + JS). Koi build tool nahi chahiye. `index.html` double-click karke dekh sakte hain.
+YDC KUST ki website do versions mein hai. Dono ka content same hai.
 
-## Structure
-- `index.html` Home
+| Version | Folder | Kab use karein |
+|---|---|---|
+| **PHP (FTP ke liye)** | `php/` | Hosting par upload karne ke liye. Forms server par handle hoti hain. **Database ki zaroorat nahi.** |
+| **Static HTML** | root | GitHub Pages / offline preview ke liye. Forms JS se submit hoti hain. |
+
+---
+
+## PHP version — FTP upload
+
+`php/` folder poora deploy-ready hai:
+
+- `index.php` (Home) + 21 more `.php` pages
+- `includes/header.php` aur `includes/footer.php` — navigation/footer sirf ek jagah
+- `includes/config.php` — site name, email, phone, form settings
+- `assets/` — wahi CSS, JS aur images
+- `data/` — form submissions (web se blocked)
+- `.htaccess` — Apache/LiteSpeed settings
+
+**Upload kaise karein:** `php/` folder ke *contents* apne hosting ke
+`public_html/` mein (ya pehle test ke liye `public_html/ydc/` mein) upload karein.
+Poori guide: `php/README-FTP.md`.
+
+### Database
+Site **abhi database use nahi karti**. MySQL connect nahi hota, koi table
+create/alter nahi hota — hosting par maujooda database files bilkul safe rahengi.
+
+Form submissions default taur par `php/data/submissions-YYYY-MM.jsonl` mein
+save hoti hain (web access blocked). Baad mein database milne par
+`php/includes/config.php` ke neeche diya gaya `db` block bhar kar
+`ydc_store()` ko PDO insert par switch kar sakte hain.
+
+### Forms ki settings
+`php/includes/config.php`:
+
+```php
+'forms' => [
+    'store' => true,               // data/*.jsonl mein save karein
+    'mail'  => false,              // PHP mail() se email bhejein
+    'to'    => 'ydc@kust.edu.pk',
+],
+```
+
+`mail` default `false` hai kyunki bohat si shared hosting `mail()` block karti hai.
+
+---
+
+## Static HTML version
+
+`index.html` double-click karke dekh sakte hain. Koi build tool nahi chahiye.
+Forms ke liye `assets/js/config.js` mein `formEndpoint` set karein
+(Google Sheet / Formspree) — details `setup/google-sheet-form.gs` mein.
+
+---
+
+## Structure (dono versions)
+
+- Home: `index`
 - About YDC: `about`, `vision-mission`, `objectives`, `team`, `mous`
 - 4 E's: `education`, `employment`, `engagement`, `environment`
-- Programs: `short-courses`, `internships`, `digital-youth-hub`, `youth-council`
+- Programs: `short-courses`, `internships`, `digital-youth-hub`, `pmydp`, `youth-council`
 - Events: `upcoming-events`, `past-events`, `magazines`
-- Forms: `register.html` (events, courses, internships, council, hub) aur `contact.html`
-- `assets/css/style.css` (colours sab upar `:root` mein), `assets/js/main.js`, `assets/js/config.js`, `assets/img/`
-
-Gallery ab navbar mein nahi hai. Photos Home, About (office) aur Past events page par hain, click karne par bari ho jati hain.
-
-## Forms ko submit kaise karwana hai (zaroori)
-Website static hai, isliye form data ko kisi jagah bhejna parta hai. Do tareeqe:
-1. **Google Sheet (recommended, free):** `setup/google-sheet-form.gs` mein steps likhe hain. Jo URL milay use `assets/js/config.js` ke `formEndpoint` mein daal dein. Har registration sheet mein row ban jati hai aur ydc@kust.edu.pk par email bhi aati hai.
-2. **Formspree / Web3Forms:** unka endpoint URL `formEndpoint` mein daal dein.
-
-`formEndpoint` khali ho to form submit par email app khulti hai (ydc@kust.edu.pk ke liye pre-filled mail). Yeh sirf backup hai.
+- Forms: `register`, `contact`
 
 ## Update kaise karein
-- Naya event: `upcoming-events.html` mein ek `<article class="ev">` copy karke badal dein, aur `register.html` ki dropdown mein option add karein.
-- Social media links: har page ke footer mein `href="#"` ko apne links se badlein.
-- E-Magazine PDFs: `magazines.html` mein `href="#"` ki jagah PDF ka link.
-- Team photos: `assets/img/` mein nayi photo daal kar `team.html` mein `person` card badlein.
+
+- **PHP version:** text `index.php` / `team.php` etc. mein edit karein.
+  Header/footer `php/includes/` mein hain.
+- Naya event: relevant page mein `<article class="ev">` copy karein aur
+  `register.php` ki dropdown list mein option add karein.
+- Social links: `php/includes/footer.php` (PHP) ya har page ka footer (HTML).
+- Team photos: `assets/img/` mein photo daal kar `person` card badlein.
+
+## Notes
+
+- NAVTTC ka spelling har jagah **NAVTTC** hai.
+- `ypdc` page hata diya gaya hai.

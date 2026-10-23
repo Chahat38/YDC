@@ -1,0 +1,53 @@
+# ============================================================
+#  YDC KUST — PHP site (Apache / LiteSpeed)
+# ============================================================
+#  Upload the CONTENTS of this folder to your hosting, either in
+#  the web root (public_html) or in a subfolder such as /ydc/.
+#  All links are relative, so both methods work.
+#
+#  If the site shows "500 Internal Server Error" after upload,
+#  rename this file to .htaccess.off — the site still works
+#  without it.
+# ============================================================
+
+# Default document, in order of preference.
+DirectoryIndex index.php index.html
+
+# Stop folder listings.
+Options -Indexes
+
+# Pretty 404 page. If you upload into a subfolder, change the
+# path to match, for example: ErrorDocument 404 /ydc/404.php
+# ErrorDocument 404 /404.php
+
+# Never serve raw submission logs or this guide.
+<FilesMatch "\.(jsonl|log|md)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Compression (harmless when the module is missing).
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache images and fonts for a month.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png  "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType text/css   "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+</IfModule>

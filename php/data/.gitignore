@@ -1,0 +1,3 @@
+# Form submissions are private. Never commit them.
+*.jsonl
+!/.gitkeep

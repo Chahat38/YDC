@@ -1,0 +1,413 @@
+/* YDC KUST — redesign layer.
+   Modern compact navbar + full-width image hero + layout/contrast fixes.
+   Loaded after style.css and pro.css so it wins without touching them. */
+
+/* ============================================================
+   1. NAVBAR — slimmer, cleaner, calmer
+   ============================================================ */
+header.site{
+  background:var(--head-bg);
+  border-bottom:1px solid transparent;
+  transition:background .3s,box-shadow .3s,border-color .3s;
+}
+header.site.scrolled,header.site.stuck{
+  background:rgba(255,255,255,.9);
+  border-bottom-color:var(--head-line);
+  box-shadow:0 1px 0 rgba(6,77,50,.04),0 12px 32px -24px rgba(6,77,50,.45);
+}
+header.site .wrap{min-height:64px;gap:1.5rem}
+
+/* brand: tighter, subtitle hidden until there is room */
+.brand{gap:.65rem}
+.brand img{width:40px;height:40px}
+.brand b{font:800 1.08rem/1.15 var(--font-d);letter-spacing:-.02em}
+.brand small{font-size:.7rem;letter-spacing:.01em;max-width:170px}
+
+/* links: roomier hit areas, quieter default colour */
+nav.main ul{gap:.05rem}
+nav.main a.top,nav.main button.top{
+  padding:.55rem .7rem;
+  font:600 .92rem var(--font-b);
+  color:var(--text);
+  border-radius:99px;
+  transition:color .2s,background .2s;
+}
+nav.main a.top:hover,nav.main button.top:hover,nav.main li.open>button{
+  color:var(--g-dd);background:var(--mist);
+}
+/* active link: soft pill instead of an underline stub */
+nav.main .on{color:var(--g-dd);font-weight:700}
+nav.main .on::after{display:none}
+nav.main a.top.on{background:var(--g-soft)}
+
+/* CTA sits a little apart from the links */
+.nav-cta{margin-left:.5rem;padding-left:.9rem;border-left:1px solid var(--line)}
+.nav-cta .btn{border-radius:99px;padding:.6rem 1.15rem;font-size:.9rem}
+
+/* dropdown: bigger radius, softer shadow, slide-in */
+.drop{
+  min-width:290px;
+  border-radius:18px;
+  padding:.55rem;
+  border-color:rgba(217,234,223,.9);
+  box-shadow:0 24px 60px -28px rgba(6,77,50,.42),0 2px 6px -4px rgba(6,77,50,.18);
+  animation:dropIn .18s ease both;
+}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.drop a{border-radius:11px;padding:.6rem .8rem}
+.drop a small{font-size:.8rem;margin-top:3px}
+
+/* burger: match the slimmer bar */
+.burger{border-radius:99px;padding:.5rem .6rem}
+
+/* ============================================================
+   2. HERO — full-bleed image with a green scrim
+   ============================================================ */
+.hero-banner{
+  position:relative;
+  isolation:isolate;
+  display:block;
+  min-height:clamp(460px,72vh,760px);
+  padding:clamp(3.5rem,8vw,6rem) 0 clamp(4rem,9vw,7rem);
+  overflow:hidden;
+  background:var(--g-dd);
+  color:#fff;
+}
+/* FIX: cancel the dead 2-column grid inherited from pro.css:21.
+   Without this the copy was squeezed into ~52% width with a blank right half. */
+.hero-banner .wrap{
+  position:relative;
+  display:block;
+  grid-template-columns:none;
+  max-width:none;
+}
+.hero-banner .wrap > *{max-width:var(--wrap)}
+
+.hero-banner .hb-media{position:absolute;inset:0;z-index:-2}
+.hero-banner .hb-media img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+/* scrim: a left-to-right wash for text contrast, plus a soft vertical settle */
+.hero-banner::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    linear-gradient(100deg,rgba(3,45,29,.95) 0%,rgba(4,56,36,.88) 40%,rgba(5,64,42,.55) 70%,rgba(6,77,50,.3) 100%),
+    linear-gradient(180deg,rgba(3,45,29,.4),transparent 50%);
+}
+.hero-banner .hero-inner{max-width:min(38rem,100%)}
+
+.hero-banner .eyebrow{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.3);
+  color:#eafff5;
+  text-shadow:0 1px 2px rgba(0,0,0,.35);
+  backdrop-filter:blur(6px);
+  margin-bottom:1.4rem;
+}
+.hero-banner .eyebrow::before{background:var(--eng)}
+
+.hero-banner h1{
+  color:#fff;
+  font-size:clamp(2.3rem,5.2vw,4.3rem);
+  line-height:1.05;
+  letter-spacing:-.025em;
+  max-width:20ch;
+  margin:0 0 .5em;
+  text-wrap:balance;
+  text-shadow:0 2px 18px rgba(0,0,0,.28);
+}
+.hero-banner h1 em{font-style:normal;color:var(--eng)}
+.hero-banner p.lead{
+  color:#e6f6ee;
+  font-size:clamp(1.05rem,1.6vw,1.22rem);
+  max-width:50ch;
+  margin:0;
+  text-shadow:0 1px 10px rgba(0,0,0,.35);
+}
+.hero-banner .acts{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:2rem;align-items:center}
+/* buttons on the scrim need their own contrast */
+.hero-banner .btn-p{background:#fff;color:var(--g-dd)}
+.hero-banner .btn-p:hover{background:var(--g-soft);color:var(--g-dd)}
+.hero-banner .btn-o{border-color:rgba(255,255,255,.6);color:#fff}
+.hero-banner .btn-o:hover{background:rgba(255,255,255,.16);border-color:#fff;color:#fff}
+
+/* date badge, in the text column so it never overlaps the photo */
+.hero-banner .hb-card{
+  display:inline-flex;align-items:center;gap:.85rem;
+  margin-top:2.2rem;
+  padding:.6rem 1.15rem .6rem .6rem;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.26);
+  border-radius:99px;
+  backdrop-filter:blur(10px);
+  text-decoration:none;color:#fff;
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.hero-banner .hb-card:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.45);color:#fff;transform:translateY(-2px)}
+.hero-banner .hb-card .d{
+  flex:none;display:grid;place-items:center;
+  background:var(--eng);color:var(--ink);
+  border-radius:99px;padding:.4rem .8rem;
+  font:800 .78rem/1.05 var(--font-b);text-transform:uppercase;letter-spacing:.04em;
+}
+.hero-banner .hb-card .d b{display:block;font:800 1.15rem/1 var(--font-d);letter-spacing:-.02em}
+.hero-banner .hb-card small{display:block;font-size:.76rem;color:rgba(233,248,241,.75);line-height:1.2}
+.hero-banner .hb-card span:last-child b{font:700 .96rem/1.3 var(--font-d)}
+
+/* the old split-layout column is unused now */
+.hero-banner .hcol{display:none}
+
+/* entrances */
+.hero-banner .rise{opacity:0;animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-banner .rise:nth-child(2){animation-delay:.07s}
+.hero-banner .rise:nth-child(3){animation-delay:.14s}
+.hero-banner .rise:nth-child(4){animation-delay:.21s}
+.hero-banner .rise:nth-child(5){animation-delay:.28s}
+
+@media(max-width:1060px){
+  .hero-banner{min-height:0;padding:clamp(3rem,9vw,4.5rem) 0}
+  .hero-banner h1{max-width:26ch}
+  .hero-banner p.lead{max-width:none}
+}
+@media(max-width:900px){
+  header.site .wrap{gap:1rem}
+  .hero-banner .acts .btn{flex:1 1 auto;justify-content:center}
+}
+@media(max-width:640px){
+  .hero-banner{min-height:0;padding:2.6rem 0 3.2rem}
+  .hero-banner h1{font-size:2.05rem;max-width:none}
+  .hero-banner p.lead{font-size:1rem}
+  .hero-banner::before{
+    background:
+      linear-gradient(180deg,rgba(3,45,29,.95) 0%,rgba(4,56,36,.9) 55%,rgba(5,64,42,.85) 100%);
+  }
+  .hero-banner .hb-card{width:100%;border-radius:16px}
+  .nav-cta{padding-left:0;border-left:0}
+}
+
+/* ============================================================
+   3. TEAM — column count follows the number of cards so rows
+   never end with a big blank gap.
+   ============================================================ */
+.team{grid-template-columns:repeat(4,1fr);align-items:stretch}
+/* 5 cards (home): 3 across reads better than 4+1 */
+.team:has(.person:nth-child(5)):not(:has(.person:nth-child(6))){grid-template-columns:repeat(3,1fr)}
+.person{display:flex;flex-direction:column}
+.person .t{margin-top:auto}
+.person .ph{aspect-ratio:1/1.05;flex:none}
+.person img{object-position:center 18%}
+
+@media(max-width:1060px){
+  .team,.team:has(.person:nth-child(5)):not(:has(.person:nth-child(6))){grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:900px){
+  .team,.team:has(.person:nth-child(5)):not(:has(.person:nth-child(6))){grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .team,.team:has(.person:nth-child(5)):not(:has(.person:nth-child(6))){grid-template-columns:1fr 1fr}
+}
+
+/* ============================================================
+   4. ALIGNMENT — flatten the ragged rows and uneven rhythm
+   ============================================================ */
+
+/* Cards in a row should share a baseline and a bottom edge. */
+.pillars,.grid,.g2,.g3,.g4{align-items:stretch}
+.pillar,.card{display:flex;flex-direction:column}
+.pillar > :last-child,.card > :last-child{margin-bottom:0}
+/* keep the CTA row glued to the bottom of every card */
+.card .acts,.pillar .acts{margin-top:auto}
+
+/* Card headers/paragraphs start on the same line across a row. */
+.sec-head h2,.sec-head p{margin-top:0}
+.sec-head{margin-bottom:2.5rem}
+
+/* Section rhythm: one predictable gap between stacked sections. */
+.sec{padding:clamp(3.25rem,6vw,5rem) 0}
+.sec + .sec{padding-top:clamp(3.25rem,6vw,5rem)}
+.sec-head.row{align-items:flex-end}
+.sec-head.row > :only-child{max-width:640px}
+
+/* The ticker sits directly under the hero: give it breathing room. */
+.ticker{margin-top:0;border-top:1px solid rgba(255,255,255,.08)}
+
+/* Vision/mission + form layouts were top-aligned against a tall stack,
+   leaving a big hole under the image. Centre them like .split/.hero do. */
+.vm,.form-wrap{align-items:center}
+.vm > .photo,.vm > figure,.form-wrap > .photo{align-self:center}
+
+/* Event rows: keep the date, copy and button on one baseline. */
+.ev{align-items:center}
+.ev .btn{align-self:center}
+
+/* Lead card on team.html: photo + copy should be centred together. */
+.lead-card{align-items:center}
+
+/* Consistent measure for intro copy under a page header. */
+.phead p{max-width:62ch}
+
+/* ============================================================
+   5. CONTRAST — text that was invisible or too faint
+   ============================================================ */
+
+/* .band: dark green panel. The generic `main h2:not(#_)` reset in pro.css
+   was forcing its heading to dark ink, making it nearly invisible. */
+.band{color:#eafff5}
+.band h2{color:#fff}
+.band p{color:rgba(234,255,245,.9)}
+main .band h2:not(#_){color:#fff}
+main .band p:not(#_){color:rgba(234,255,245,.9)}
+
+/* Opportunities tags (.opp-tag) used the accent colour as *text* on the light
+   mist background, so Fellowship (yellow) sat at 1.78:1 and Conference
+   (orange) at 2.78:1 — both unreadable. Invert to a solid coloured pill. */
+.opp-tag{
+  background:var(--c,var(--g-dd));
+  color:#fff;
+  display:inline-block;
+  line-height:1.5;
+  padding:.22rem .7rem;
+}
+.opp[data-type=Fellowship] .opp-tag,
+.opp[data-type=Conference] .opp-tag{color:var(--ink)}
+.opp:not([data-type]) .opp-tag,
+.opp[data-type=""] .opp-tag{background:var(--g-dd);color:#fff}
+main .opp-tag:not(#_){color:#fff}
+main .opp[data-type=Fellowship] .opp-tag:not(#_),
+main .opp[data-type=Conference] .opp-tag:not(#_){color:var(--ink)}
+
+/* Magazine covers: `.cover` is a coloured panel with white copy.
+   On the yellow (eng) and orange (emp) accents white text is unreadable,
+   so those two get dark ink; the rest keep white with a shadow. */
+.cover.edu,.cover.env{color:#fff}
+.cover.emp,.cover.eng{color:var(--ink)}
+.cover small,.cover b{position:relative;z-index:1}
+.cover{text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.cover.emp,.cover.eng{text-shadow:none}
+main .cover:not(#_){color:#fff}
+main .cover.emp:not(#_),main .cover.eng:not(#_){color:var(--ink)}
+
+/* Calendar date chips: white on the brand green was 2.98:1, just under 3:1.
+   Deepen the chip background so the small numbers read clearly. */
+.date,.date.eng{background:var(--g-dd);color:#fff}
+.date b{color:#fff}
+main .date:not(#_){background:var(--g-dd);color:#fff}
+main .date b:not(#_){color:#fff}
+
+/* Any generic heading placed on a dark panel should never inherit dark ink. */
+.band h3,.band h4{color:#fff}
+
+/* Footer links were a muted green on near-black; lift them. */
+footer.site{color:#cfe6da}
+footer.site a{color:#cfe6da}
+footer.site a:hover{color:#fff}
+footer.site h4{color:#fff}
+
+/* Ticker copy at .9 alpha over ink is thin at small sizes. */
+.tk-track a{color:rgba(255,255,255,.95)}
+
+/* Eyebrow pills outside the hero sit on light backgrounds. */
+.eyebrow{color:var(--g-dd)}
+
+/* The 4-E tiles: white on yellow was the only unreadable pair. */
+.tile span,.cover{text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.t-eng span{color:var(--ink)}
+
+/* Any coloured accent bar/tag that lands on yellow needs dark ink. */
+.date.eng,.cover.eng,.pillar.eng .ico{color:var(--ink)}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-banner .rise{opacity:1;animation:none}
+  .drop{animation:none}
+}
+
+/* ============================================================
+   6. BEAT GENERIC RESETS
+   pro.css has rules like `main h1:not(#_)` and `main .hero h1:not(#_)`
+   that outrank plain class selectors, so the hero copy was still
+   inheriting dark ink on the dark scrim. Match their shape to win.
+   ============================================================ */
+main .hero-banner h1:not(#_){color:#fff;font-size:clamp(2.3rem,5.2vw,4.3rem);line-height:1.05;max-width:20ch}
+main .hero-banner p.lead:not(#_){color:#e6f6ee;font-size:clamp(1.05rem,1.6vw,1.22rem);max-width:50ch}
+main .hero-banner .eyebrow:not(#_){color:#eafff5}
+main .hero-banner .btn-p:not(#_){background:#fff;color:var(--g-dd)}
+main .hero-banner .btn-o:not(#_){color:#fff;border-color:rgba(255,255,255,.6)}
+main .hero-banner .hb-card:not(#_){color:#fff}
+main .hero-banner .hb-card small:not(#_){color:rgba(233,248,241,.78)}
+main .hero-banner .hb-card .d:not(#_){color:var(--ink)}
+main .hero-banner .hb-card span:last-child b:not(#_){color:#fff}
+.hero-banner h1,.hero-banner p.lead,.hero-banner .eyebrow{text-shadow:0 2px 16px rgba(0,0,0,.3)}
+
+/* ============================================================
+   7. PMYDP — about block with a properly framed photo.
+   Replaces the old .lead-card (a 260px tall crop that cut the
+   group shot awkwardly). Photo gets a fixed 16:11 frame, rounded
+   corners, a subtle ring and shadow, while the copy sits beside
+   it with eyebrow, heading and a small facts row.
+   ============================================================ */
+.pmy-about{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  gap:clamp(1.8rem,4vw,3.5rem);
+  align-items:center;
+}
+.pmy-photo{
+  position:relative;
+  margin:0;
+  border-radius:var(--r-l);
+  overflow:hidden;
+  aspect-ratio:16/11;
+  background:var(--g-soft);
+  box-shadow:0 26px 60px -30px rgba(6,77,50,.55),0 2px 0 0 rgba(6,77,50,.04);
+}
+/* thin inner ring so the photo edge reads on any background */
+.pmy-photo::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),inset 0 -80px 90px -60px rgba(3,45,29,.75);
+  pointer-events:none;
+}
+.pmy-photo img{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 32%;
+  display:block;
+  transition:transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.pmy-photo:hover img{transform:scale(1.04)}
+.pmy-photo figcaption{
+  position:absolute;left:1.1rem;bottom:1rem;right:1.1rem;
+  color:#eafff5;font:600 .86rem/1.3 var(--font-b);
+  text-shadow:0 1px 8px rgba(0,0,0,.5);
+  z-index:1;
+}
+/* small scrim behind the caption so it never sits on a bright patch */
+.pmy-photo figcaption{
+  right:auto;display:inline-block;
+  padding:.4rem .85rem;border-radius:99px;
+  background:rgba(3,45,29,.72);
+  backdrop-filter:blur(6px);
+  text-shadow:none;
+}
+
+.pmy-intro h2{margin:0 0 .6em}
+.pmy-intro .eyebrow{margin-bottom:1.1rem}
+.pmy-intro p{color:var(--text);margin:0 0 1rem}
+.pmy-facts{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+  margin-top:1.6rem;
+  padding-top:1.4rem;
+  border-top:1px solid var(--line);
+}
+.pmy-facts b{display:block;font:700 .74rem/1.2 var(--font-b);text-transform:uppercase;letter-spacing:.06em;color:var(--g-dd);margin-bottom:.25rem}
+.pmy-facts span{font-size:.95rem;color:var(--text)}
+
+@media(max-width:900px){
+  .pmy-about{grid-template-columns:1fr;gap:1.6rem}
+  .pmy-photo{aspect-ratio:16/10}
+  .pmy-photo:hover img{transform:none}
+}
+@media(max-width:560px){
+  .pmy-photo{aspect-ratio:4/3;border-radius:var(--r-m)}
+  .pmy-facts{grid-template-columns:1fr 1fr}
+  .pmy-photo figcaption{font-size:.8rem;left:.8rem;bottom:.7rem}
+}
