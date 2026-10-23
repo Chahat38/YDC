@@ -411,3 +411,131 @@ main .hero-banner .hb-card span:last-child b:not(#_){color:#fff}
   .pmy-facts{grid-template-columns:1fr 1fr}
   .pmy-photo figcaption{font-size:.8rem;left:.8rem;bottom:.7rem}
 }
+
+/* ============================================================
+   8. MOBILE NAVIGATION FIX
+   The sticky header used backdrop-filter for its glass effect.
+   `backdrop-filter` creates a containing block for position:fixed
+   descendants, so the slide-in menu was trapped inside the 69px
+   header: it opened as a thin, unreachable strip. The glass is now
+   painted by ::after (a pseudo-element is not an ancestor), which
+   lets the nav position itself against the real viewport.
+   ============================================================ */
+header.site{
+  background:transparent;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+}
+header.site::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:var(--head-bg);
+  -webkit-backdrop-filter:var(--head-blur);
+  backdrop-filter:var(--head-blur);
+  pointer-events:none;
+}
+header.site.scrolled,
+header.site.stuck{background:transparent}
+header.site.scrolled::after,
+header.site.stuck::after{background:rgba(255,255,255,.9)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  header.site::after{background:rgba(255,255,255,.97)}
+}
+
+@media(max-width:1060px){
+  nav.main{
+    top:0;right:0;bottom:0;left:auto;
+    height:100dvh;
+    max-height:100dvh;
+    width:min(360px,88vw);
+    padding:5.1rem 1.1rem 1.6rem;
+    border-left:1px solid var(--head-line);
+    box-shadow:-30px 0 60px -30px rgba(6,77,50,.45);
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* finger-sized rows: redesign's .55rem padding was too tight */
+  nav.main a.top,nav.main button.top{
+    padding:.85rem .8rem;
+    font-size:1rem;
+    border-radius:12px;
+  }
+  nav.main ul{gap:.15rem}
+  .drop{margin:0 0 .45rem .55rem;padding-left:.15rem}
+  .drop a{padding:.65rem .75rem}
+  .nav-cta{margin:1rem 0 0;padding-left:0;border-left:0}
+  .nav-close{top:.85rem;right:.9rem}
+  nav.main.open{transform:none;visibility:visible}
+}
+
+/* ============================================================
+   9. HERO RESPONSIVENESS
+   pro.css pins the hero heading with `main .hero-banner h1:not(#_)`,
+   so the mobile sizes below use the same selector shape to win.
+   ============================================================ */
+@media(max-width:1060px){
+  main .hero-banner h1:not(#_){
+    font-size:clamp(2.1rem,4.6vw,3rem);
+    line-height:1.1;
+    max-width:24ch;
+  }
+  main .hero-banner p.lead:not(#_){
+    font-size:clamp(1.02rem,1.5vw,1.15rem);
+    max-width:46ch;
+  }
+}
+@media(max-width:900px){
+  .hero-banner{
+    min-height:0;
+    padding:clamp(2.6rem,7vw,3.6rem) 0 clamp(2.8rem,7vw,3.8rem);
+  }
+  .hero-banner .hero-inner{max-width:36rem}
+  .hero-banner .hb-media img{object-position:center 24%}
+  main .hero-banner h1:not(#_){max-width:20ch}
+}
+@media(max-width:640px){
+  .hero-banner{padding:2.1rem 0 2.5rem}
+  main .hero-banner h1:not(#_){
+    font-size:clamp(1.85rem,7.4vw,2.35rem);
+    line-height:1.13;
+    letter-spacing:-.02em;
+    max-width:none;
+    margin-bottom:.5em;
+  }
+  main .hero-banner p.lead:not(#_){
+    font-size:.98rem;
+    line-height:1.6;
+    max-width:none;
+  }
+  .hero-banner .eyebrow{
+    font-size:.72rem;
+    padding:.4rem .7rem;
+    margin-bottom:1rem;
+  }
+  .hero-banner .acts{gap:.55rem;margin-top:1.4rem}
+  .hero-banner .acts .btn{
+    flex:1 1 100%;
+    justify-content:center;
+    padding:.85rem 1rem;
+    font-size:.95rem;
+  }
+  .hero-banner .hb-card{
+    margin-top:1.35rem;
+    width:100%;
+    border-radius:14px;
+    padding:.55rem .85rem .55rem .55rem;
+    gap:.65rem;
+  }
+  .hero-banner .hb-card .d{padding:.35rem .6rem;font-size:.72rem}
+  .hero-banner .hb-card .d b{font-size:1rem}
+  .hero-banner .hb-card span:last-child b{font-size:.9rem}
+  .hero-banner .hb-card small{font-size:.71rem}
+  .hero-banner::before{
+    background:linear-gradient(180deg,rgba(3,42,27,.94) 0%,rgba(4,52,34,.9) 45%,rgba(4,60,39,.92) 100%);
+  }
+}
+@media(max-width:380px){
+  main .hero-banner h1:not(#_){font-size:1.72rem}
+}
